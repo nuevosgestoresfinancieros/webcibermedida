@@ -1,14 +1,14 @@
 // Mock data for Cibermedida clone
 
 export const navLinks = [
-  { label: 'Cibermedida', href: '#cibermedida' },
-  { label: 'Soluciones', href: '#soluciones' },
-  { label: 'Recursos', href: '#recursos' },
-  { label: 'Inteligencia Artificial', href: '#ia' },
-  { label: 'Preguntanos', href: '#preguntanos' },
-  { label: 'Noticias', href: '#noticias' },
-  { label: 'Políticas', href: '#politicas' },
-  { label: 'Contacto', href: '#contacto' },
+  { label: 'Cibermedida', to: '/' },
+  { label: 'Soluciones', to: '/soluciones' },
+  { label: 'Recursos', to: '/recursos' },
+  { label: 'Inteligencia Artificial', to: '/inteligencia-artificial' },
+  { label: 'Preguntanos', to: '/preguntanos' },
+  { label: 'Noticias', to: '/noticias' },
+  { label: 'Políticas', to: '/politicas' },
+  { label: 'Contacto', to: '/contacto' },
 ];
 
 export const heroSlides = [

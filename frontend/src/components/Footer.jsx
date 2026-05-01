@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
+import { Link } from 'react-router-dom';
 import { Facebook, Linkedin, Youtube, MessageCircle, Mail, Phone, MapPin, X } from 'lucide-react';
+import { navLinks } from '../mock';
 
 export default function Footer() {
   const [cookieVisible, setCookieVisible] = useState(true);
@@ -51,9 +53,9 @@ export default function Footer() {
             <div>
               <h4 className="text-white font-bold mb-4">Enlaces</h4>
               <ul className="space-y-2 text-sm">
-                {['Sobre nosotros', 'Soluciones', 'Recursos', 'Noticias', 'Políticas', 'Contacto'].map((s) => (
-                  <li key={s}>
-                    <a href="#" className="hover:text-cyan-400 transition-colors">{s}</a>
+                {navLinks.map((l) => (
+                  <li key={l.label}>
+                    <Link to={l.to} className="hover:text-cyan-400 transition-colors">{l.label}</Link>
                   </li>
                 ))}
               </ul>

@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { Link, NavLink } from 'react-router-dom';
 import { Search, Facebook, Linkedin, Youtube, MessageCircle, Menu, X } from 'lucide-react';
 import { navLinks } from '../mock';
 
@@ -10,7 +11,7 @@ export default function Header() {
     <header className="sticky top-0 z-50 bg-cyan-400 shadow-sm">
       <div className="max-w-[1400px] mx-auto px-4 lg:px-8 flex items-center justify-between h-[88px]">
         {/* Logo */}
-        <a href="#" className="flex items-center gap-2 shrink-0">
+        <Link to="/" className="flex items-center gap-2 shrink-0">
           <div className="flex flex-col items-center leading-tight">
             <div className="flex items-center gap-2">
               <div className="relative w-10 h-10 rounded-full bg-gradient-to-br from-slate-800 to-slate-900 flex items-center justify-center">
@@ -21,19 +22,28 @@ export default function Header() {
             </div>
             <span className="text-[10px] font-semibold text-slate-800 mt-0.5 tracking-wider">Servicios De Ciberseguridad</span>
           </div>
-        </a>
+        </Link>
 
         {/* Nav */}
         <nav className="hidden xl:flex items-center gap-6">
           {navLinks.map((l) => (
-            <a
+            <NavLink
               key={l.label}
-              href={l.href}
-              className="text-[14px] font-medium text-slate-900 hover:text-white transition-colors relative group"
+              to={l.to}
+              end={l.to === '/'}
+              className={({ isActive }) =>
+                `text-[14px] font-medium transition-colors relative group ${
+                  isActive ? 'text-white' : 'text-slate-900 hover:text-white'
+                }`
+              }
             >
-              {l.label}
-              <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-white transition-all duration-300 group-hover:w-full"></span>
-            </a>
+              {({ isActive }) => (
+                <>
+                  {l.label}
+                  <span className={`absolute -bottom-1 left-0 h-0.5 bg-white transition-all duration-300 ${isActive ? 'w-full' : 'w-0 group-hover:w-full'}`}></span>
+                </>
+              )}
+            </NavLink>
           ))}
         </nav>
 
@@ -82,14 +92,14 @@ export default function Header() {
         <div className="xl:hidden bg-cyan-400 border-t border-cyan-500">
           <nav className="flex flex-col px-4 py-3 gap-2">
             {navLinks.map((l) => (
-              <a
+              <Link
                 key={l.label}
-                href={l.href}
+                to={l.to}
                 onClick={() => setOpen(false)}
                 className="py-2 text-slate-900 font-medium border-b border-cyan-500/40"
               >
                 {l.label}
-              </a>
+              </Link>
             ))}
           </nav>
         </div>
