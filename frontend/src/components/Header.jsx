@@ -11,17 +11,12 @@ export default function Header() {
     <header className="sticky top-0 z-50 bg-cyan-400 shadow-sm">
       <div className="max-w-[1400px] mx-auto px-4 lg:px-8 flex items-center justify-between h-[88px]">
         {/* Logo */}
-        <Link to="/" className="flex items-center gap-2 shrink-0">
-          <div className="flex flex-col items-center leading-tight">
-            <div className="flex items-center gap-2">
-              <div className="relative w-10 h-10 rounded-full bg-gradient-to-br from-slate-800 to-slate-900 flex items-center justify-center">
-                <div className="w-7 h-7 rounded-full border-2 border-cyan-300"></div>
-                <div className="absolute inset-0 m-auto w-1.5 h-1.5 rounded-full bg-cyan-300"></div>
-              </div>
-              <span className="font-black text-slate-900 text-xl tracking-wide">CIBERMEDIDA</span>
-            </div>
-            <span className="text-[10px] font-semibold text-slate-800 mt-0.5 tracking-wider">Servicios De Ciberseguridad</span>
-          </div>
+        <Link to="/" className="flex items-center shrink-0">
+          <img
+            src="https://customer-assets.emergentagent.com/job_health-portal-build/artifacts/ujk41ayl_logo%20sin%20fondo.png"
+            alt="Cibermedida"
+            className="h-16 lg:h-20 w-auto object-contain"
+          />
         </Link>
 
         {/* Nav */}

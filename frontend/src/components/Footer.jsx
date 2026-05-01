@@ -12,17 +12,13 @@ export default function Footer() {
         <div className="max-w-[1400px] mx-auto px-4 lg:px-8">
           <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-10 pb-12 border-b border-slate-800">
             <div className="space-y-4">
-              <div className="flex items-center gap-2">
-                <div className="w-10 h-10 rounded-full bg-cyan-400 flex items-center justify-center">
-                  <div className="w-6 h-6 rounded-full border-2 border-slate-900"></div>
-                </div>
-                <div>
-                  <div className="text-white font-black text-lg">CIBERMEDIDA</div>
-                  <div className="text-cyan-400 text-[10px] font-semibold tracking-wider">
-                    Servicios De Ciberseguridad
-                  </div>
-                </div>
-              </div>
+              <Link to="/" className="inline-block">
+                <img
+                  src="https://customer-assets.emergentagent.com/job_health-portal-build/artifacts/ujk41ayl_logo%20sin%20fondo.png"
+                  alt="Cibermedida"
+                  className="h-20 w-auto object-contain"
+                />
+              </Link>
               <p className="text-sm text-slate-400 leading-relaxed">
                 Entidad especializada en formación técnica y transformación digital para empresas, centros formativos y administraciones públicas.
               </p>
