@@ -83,10 +83,13 @@ export default function Footer() {
 
           <div className="pt-6 flex flex-col md:flex-row items-center justify-between gap-3 text-xs text-slate-500">
             <p>© 2026 Cibermedida. Todos los derechos reservados.</p>
-            <div className="flex gap-5">
+            <div className="flex gap-5 items-center">
               <a href="#" className="hover:text-cyan-400">Aviso legal</a>
               <a href="#" className="hover:text-cyan-400">Privacidad</a>
               <a href="#" className="hover:text-cyan-400">Cookies</a>
+              <Link to="/admin/login" className="hover:text-cyan-400 opacity-60 hover:opacity-100" title="Acceso administración">
+                Admin
+              </Link>
             </div>
           </div>
         </div>
