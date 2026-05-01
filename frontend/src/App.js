@@ -31,6 +31,12 @@ function RouteSideEffects() {
   useEffect(() => {
     window.scrollTo({ top: 0, behavior: 'instant' });
     document.title = TITLES[pathname] || 'Cibermedida';
+    // Toggle admin class to hide the Emergent badge on admin screens
+    if (pathname.startsWith('/admin')) {
+      document.body.classList.add('is-admin-route');
+    } else {
+      document.body.classList.remove('is-admin-route');
+    }
   }, [pathname]);
   return null;
 }
