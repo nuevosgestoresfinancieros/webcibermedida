@@ -12,6 +12,7 @@ import uuid
 from datetime import datetime, timedelta, timezone
 from passlib.context import CryptContext
 import jwt
+from emergentintegrations.llm.chat import LlmChat, UserMessage
 
 ROOT_DIR = Path(__file__).parent
 load_dotenv(ROOT_DIR / '.env')
@@ -31,6 +32,20 @@ security = HTTPBearer(auto_error=False)
 DEFAULT_ADMIN_USERNAME = os.environ.get('ADMIN_USERNAME', 'admin')
 DEFAULT_ADMIN_PASSWORD = os.environ.get('ADMIN_PASSWORD', 'cibermedida2026')
 ADMIN_SETTINGS_ID = 'admin-settings'
+EMERGENT_LLM_KEY = os.environ.get('EMERGENT_LLM_KEY', '')
+
+CHATBOT_SYSTEM_PROMPT = (
+    "Eres el asistente virtual de Cibermedida, una empresa especializada en "
+    "ciberseguridad, formación técnica e inteligencia artificial para empresas, "
+    "centros formativos y administraciones públicas en España. "
+    "Responde siempre en español, de forma clara, profesional y concisa. "
+    "Ayudas a los usuarios con dudas sobre: ciberseguridad (phishing, malware, ransomware, "
+    "RGPD, buenas prácticas, formación), servicios de Cibermedida (aula virtual, "
+    "marketplace, firma digital, auditorías), e inteligencia artificial aplicada. "
+    "Si la pregunta queda fuera de tu ámbito, redirige amablemente al usuario a "
+    "jfloradmin@cibermedida.es o +34 687 216 537. "
+    "Mantén las respuestas cortas (2-4 párrafos máximo) salvo que pidan más detalle."
+)
 
 
 # ==================== Models ====================
@@ -95,6 +110,59 @@ class MessagePatch(BaseModel):
     read: Optional[bool] = None
 
 
+# ---------- Client user models ----------
+
+class UserRegister(BaseModel):
+    name: str = Field(..., min_length=2, max_length=120)
+    email: EmailStr
+    password: str = Field(..., min_length=6, max_length=200)
+
+
+class UserLogin(BaseModel):
+    email: EmailStr
+    password: str
+
+
+class UserPublic(BaseModel):
+    id: str
+    name: str
+    email: str
+    phone: Optional[str] = None
+    company: Optional[str] = None
+    openai_api_key_set: bool = False
+    openai_api_key_masked: Optional[str] = None
+    created_at: datetime
+
+
+class UserUpdate(BaseModel):
+    name: Optional[str] = Field(None, min_length=2, max_length=120)
+    phone: Optional[str] = Field(None, max_length=40)
+    company: Optional[str] = Field(None, max_length=120)
+    openai_api_key: Optional[str] = None
+
+
+class PasswordChange(BaseModel):
+    current_password: str
+    new_password: str = Field(..., min_length=6, max_length=200)
+
+
+class AuthResponse(BaseModel):
+    token: str
+    user: UserPublic
+
+
+# ---------- Chat models ----------
+
+class ChatRequest(BaseModel):
+    message: str = Field(..., min_length=1, max_length=4000)
+    session_id: Optional[str] = None
+
+
+class ChatResponse(BaseModel):
+    session_id: str
+    reply: str
+
+
 # ==================== Helpers ====================
 
 def create_token(username: str) -> str:
@@ -130,6 +198,56 @@ def mask_key(key: Optional[str]) -> Optional[str]:
     return key[:4] + '*' * (len(key) - 8) + key[-4:]
 
 
+def create_user_token(user_id: str) -> str:
+    payload = {
+        'sub': user_id,
+        'type': 'user',
+        'exp': utcnow() + timedelta(days=30),
+        'iat': utcnow(),
+    }
+    return jwt.encode(payload, JWT_SECRET, algorithm=JWT_ALGORITHM)
+
+
+async def get_current_user(credentials: Optional[HTTPAuthorizationCredentials] = Depends(security)):
+    if credentials is None:
+        raise HTTPException(status_code=401, detail='No token provided')
+    try:
+        payload = jwt.decode(credentials.credentials, JWT_SECRET, algorithms=[JWT_ALGORITHM])
+    except jwt.ExpiredSignatureError:
+        raise HTTPException(status_code=401, detail='Token expired')
+    except jwt.InvalidTokenError:
+        raise HTTPException(status_code=401, detail='Invalid token')
+    if payload.get('type') != 'user':
+        raise HTTPException(status_code=401, detail='Invalid token type')
+    user = await db.users.find_one({'id': payload.get('sub')})
+    if not user:
+        raise HTTPException(status_code=401, detail='User not found')
+    return user
+
+
+async def get_optional_user(credentials: Optional[HTTPAuthorizationCredentials] = Depends(security)):
+    if credentials is None:
+        return None
+    try:
+        payload = jwt.decode(credentials.credentials, JWT_SECRET, algorithms=[JWT_ALGORITHM])
+        if payload.get('type') != 'user':
+            return None
+        return await db.users.find_one({'id': payload.get('sub')})
+    except Exception:
+        return None
+
+
+def user_to_public(u: dict) -> UserPublic:
+    key = u.get('openai_api_key')
+    return UserPublic(
+        id=u['id'], name=u['name'], email=u['email'],
+        phone=u.get('phone'), company=u.get('company'),
+        openai_api_key_set=bool(key),
+        openai_api_key_masked=mask_key(key),
+        created_at=u['created_at'],
+    )
+
+
 # ==================== App + Router ====================
 
 app = FastAPI(title='Cibermedida API')
@@ -152,6 +270,8 @@ async def startup():
     # Indexes
     await db.contact_messages.create_index('created_at')
     await db.newsletter_subscribers.create_index('email', unique=True)
+    await db.users.create_index('email', unique=True)
+    await db.users.create_index('id', unique=True)
 
 
 # ---------- Public endpoints ----------
@@ -307,6 +427,113 @@ async def update_settings(payload: UpdateSettingsRequest, admin=Depends(get_curr
         openai_api_key_masked=mask_key(key),
         updated_at=new_doc.get('updated_at'),
     )
+
+
+# ==================== Mount ====================
+
+# ---------- Client auth ----------
+
+@api_router.post('/auth/register', response_model=AuthResponse)
+async def register(payload: UserRegister):
+    email = payload.email.lower()
+    existing = await db.users.find_one({'email': email})
+    if existing:
+        raise HTTPException(status_code=400, detail='Ya existe una cuenta con este email')
+    user_id = str(uuid.uuid4())
+    doc = {
+        'id': user_id,
+        'name': payload.name.strip(),
+        'email': email,
+        'password_hash': pwd_context.hash(payload.password),
+        'phone': None,
+        'company': None,
+        'openai_api_key': None,
+        'created_at': utcnow(),
+    }
+    await db.users.insert_one(doc)
+    token = create_user_token(user_id)
+    return AuthResponse(token=token, user=user_to_public(doc))
+
+
+@api_router.post('/auth/login', response_model=AuthResponse)
+async def login_user(payload: UserLogin):
+    user = await db.users.find_one({'email': payload.email.lower()})
+    if not user or not pwd_context.verify(payload.password, user.get('password_hash', '')):
+        raise HTTPException(status_code=401, detail='Email o contraseña incorrectos')
+    token = create_user_token(user['id'])
+    return AuthResponse(token=token, user=user_to_public(user))
+
+
+@api_router.get('/auth/me', response_model=UserPublic)
+async def me(user=Depends(get_current_user)):
+    return user_to_public(user)
+
+
+@api_router.patch('/auth/me', response_model=UserPublic)
+async def update_me(payload: UserUpdate, user=Depends(get_current_user)):
+    update = {}
+    if payload.name is not None:
+        update['name'] = payload.name.strip()
+    if payload.phone is not None:
+        update['phone'] = payload.phone.strip() or None
+    if payload.company is not None:
+        update['company'] = payload.company.strip() or None
+    if payload.openai_api_key is not None:
+        update['openai_api_key'] = payload.openai_api_key.strip() or None
+    if update:
+        await db.users.update_one({'id': user['id']}, {'$set': update})
+    new_user = await db.users.find_one({'id': user['id']})
+    return user_to_public(new_user)
+
+
+@api_router.post('/auth/change-password')
+async def change_password(payload: PasswordChange, user=Depends(get_current_user)):
+    if not pwd_context.verify(payload.current_password, user.get('password_hash', '')):
+        raise HTTPException(status_code=401, detail='Contraseña actual incorrecta')
+    await db.users.update_one(
+        {'id': user['id']},
+        {'$set': {'password_hash': pwd_context.hash(payload.new_password)}}
+    )
+    return {'ok': True}
+
+
+# ---------- Chat (public + optional user) ----------
+
+async def _resolve_api_key(user: Optional[dict]) -> tuple[str, str]:
+    """Returns (api_key, source). Priority: user's own > admin configured > Emergent."""
+    if user and user.get('openai_api_key'):
+        return user['openai_api_key'], 'user'
+    settings = await db.admin_settings.find_one({'_id': ADMIN_SETTINGS_ID})
+    if settings and settings.get('openai_api_key'):
+        return settings['openai_api_key'], 'admin'
+    if EMERGENT_LLM_KEY:
+        return EMERGENT_LLM_KEY, 'emergent'
+    raise HTTPException(status_code=500, detail='No hay ninguna API key configurada')
+
+
+@api_router.post('/chat/message', response_model=ChatResponse)
+async def chat_message(payload: ChatRequest, user=Depends(get_optional_user)):
+    session_id = payload.session_id or str(uuid.uuid4())
+    api_key, source = await _resolve_api_key(user)
+    try:
+        chat = LlmChat(
+            api_key=api_key,
+            session_id=session_id,
+            system_message=CHATBOT_SYSTEM_PROMPT,
+        ).with_model('openai', 'gpt-4o-mini')
+        reply = await chat.send_message(UserMessage(text=payload.message))
+    except Exception as e:
+        logging.exception('Chat error')
+        raise HTTPException(status_code=500, detail=f'Error del chatbot: {str(e)[:200]}')
+
+    # Persist for history (anonymous or per-user)
+    await db.chat_messages.insert_many([
+        {'id': str(uuid.uuid4()), 'session_id': session_id, 'user_id': user['id'] if user else None,
+         'role': 'user', 'text': payload.message, 'created_at': utcnow()},
+        {'id': str(uuid.uuid4()), 'session_id': session_id, 'user_id': user['id'] if user else None,
+         'role': 'assistant', 'text': reply, 'source': source, 'created_at': utcnow()},
+    ])
+    return ChatResponse(session_id=session_id, reply=reply)
 
 
 # ==================== Mount ====================

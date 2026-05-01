@@ -102,7 +102,7 @@
 # Testing Data - Main Agent and testing sub agent both should log testing data below this section
 #====================================================================================================
 
-user_problem_statement: "Probar los endpoints del backend Cibermedida recién implementados. Todos los endpoints deben responder correctamente."
+user_problem_statement: "Probar los endpoints del backend Cibermedida Fase 1 y Fase 2. Fase 1: admin, contact, newsletter. Fase 2: client user auth y chatbot. Todos los endpoints deben responder correctamente."
 
 backend:
   - task: "Root API endpoint"
@@ -213,6 +213,117 @@ backend:
         agent: "testing"
         comment: "GET /api/admin/settings returns settings with username, openai_api_key_set flag, and masked key. PATCH /api/admin/settings successfully updates OpenAI API key (with masking) and password. Correctly validates current_password and returns 401 on mismatch. Password change and restoration tested successfully."
 
+  - task: "Client user registration"
+    implemented: true
+    working: true
+    file: "/app/backend/server.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: true
+        agent: "testing"
+        comment: "POST /api/auth/register creates new users with name, email, password (min 6 chars). Returns token and UserPublic with openai_api_key_set=false. Duplicate email correctly returns 400 'Ya existe una cuenta con este email'. Password validation (min 6 chars) returns 422 for short passwords. Test user created: juan@test-cibermedida-6b01c0f6.es"
+
+  - task: "Client user login"
+    implemented: true
+    working: true
+    file: "/app/backend/server.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: true
+        agent: "testing"
+        comment: "POST /api/auth/login authenticates users with email/password. Returns token and user object. Incorrect password correctly returns 401 'Email o contraseña incorrectos'. Token type='user' in JWT payload."
+
+  - task: "Client user profile retrieval"
+    implemented: true
+    working: true
+    file: "/app/backend/server.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: true
+        agent: "testing"
+        comment: "GET /api/auth/me returns UserPublic for authenticated user. Requires Bearer token with type='user'. Returns 401 without token or with admin token (token type validation working correctly)."
+
+  - task: "Client user profile update"
+    implemented: true
+    working: true
+    file: "/app/backend/server.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: true
+        agent: "testing"
+        comment: "PATCH /api/auth/me updates user profile (name, phone, company, openai_api_key). Setting openai_api_key shows openai_api_key_set=true and masked key (sk-u*******t123). Empty string clears the key (openai_api_key_set=false). All fields update correctly."
+
+  - task: "Client user password change"
+    implemented: true
+    working: true
+    file: "/app/backend/server.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: true
+        agent: "testing"
+        comment: "POST /api/auth/change-password changes user password. Requires current_password and new_password (min 6 chars). Returns {ok: true} on success. Incorrect current_password returns 401 'Contraseña actual incorrecta'. Login with new password verified working. Password restored to testpass123."
+
+  - task: "Chatbot anonymous messaging"
+    implemented: true
+    working: true
+    file: "/app/backend/server.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: false
+        agent: "testing"
+        comment: "Initial test failed - admin settings had invalid API key 'sk-test123' from previous testing. Cleared admin OpenAI key to allow fallback to EMERGENT_LLM_KEY."
+      - working: true
+        agent: "testing"
+        comment: "POST /api/chat/message works anonymously (no token). Returns session_id (valid UUID) and reply in Spanish. Response time ~3s (well under 30s limit). System prompt correctly guides responses about ciberseguridad topics. Empty message validation returns 422."
+
+  - task: "Chatbot multi-turn conversation"
+    implemented: true
+    working: true
+    file: "/app/backend/server.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: true
+        agent: "testing"
+        comment: "POST /api/chat/message with session_id continues conversation. Context awareness verified - follow-up question about phishing prevention correctly references previous phishing discussion. Session ID remains consistent across turns."
+
+  - task: "Chatbot authenticated messaging"
+    implemented: true
+    working: true
+    file: "/app/backend/server.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: true
+        agent: "testing"
+        comment: "POST /api/chat/message works with user Bearer token. Optional authentication working correctly. New session created when session_id not provided."
+
+  - task: "Chatbot message persistence"
+    implemented: true
+    working: true
+    file: "/app/backend/server.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: true
+        agent: "testing"
+        comment: "Chat messages persisted to MongoDB chat_messages collection. Both user and assistant messages stored with session_id, role, text, created_at. Verified 6 messages in DB from test conversations. API key resolution working: user key > admin key > EMERGENT_LLM_KEY fallback."
+
 frontend:
   - task: "Frontend testing"
     implemented: false
@@ -229,12 +340,12 @@ frontend:
 metadata:
   created_by: "testing_agent"
   version: "1.0"
-  test_sequence: 1
+  test_sequence: 2
   run_ui: false
 
 test_plan:
   current_focus:
-    - "All backend endpoints tested and verified"
+    - "Phase 2 backend endpoints tested and verified"
   stuck_tasks: []
   test_all: false
   test_priority: "high_first"
@@ -242,3 +353,5 @@ test_plan:
 agent_communication:
   - agent: "testing"
     message: "Completed comprehensive testing of all 20 Cibermedida backend endpoints. All tests passed successfully. Public endpoints (root, contact, newsletter), admin authentication (login, token verification), and all admin CRUD operations (messages, newsletter, settings) are working correctly. Password change functionality verified. All endpoints use correct external URL from REACT_APP_BACKEND_URL with /api prefix."
+  - agent: "testing"
+    message: "Phase 2 testing completed. All 21 test cases executed successfully. Client user authentication (register, login, profile, password change) working perfectly. Token type validation ensures admin tokens cannot access user endpoints. Chatbot endpoints working with anonymous and authenticated users. Multi-turn conversations maintain context. Messages persisted to MongoDB. Initial chatbot failure due to invalid admin API key (sk-test123 from previous testing) - cleared to allow EMERGENT_LLM_KEY fallback. Test user created and retained as requested: juan@test-cibermedida-6b01c0f6.es / testpass123. All backend endpoints operational."

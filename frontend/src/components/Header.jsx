@@ -1,13 +1,15 @@
 import React, { useState } from 'react';
 import { Link, NavLink } from 'react-router-dom';
-import { Search, Facebook, Linkedin, Youtube, MessageCircle, Menu, X, Mail, Phone, Sun, Moon } from 'lucide-react';
+import { Search, Facebook, Linkedin, Youtube, MessageCircle, Menu, X, Mail, Phone, Sun, Moon, User, LogIn } from 'lucide-react';
 import { navLinks } from '../mock';
 import useTheme from '../hooks/useTheme';
+import { useUserAuth } from '../contexts/UserAuthContext';
 
 export default function Header() {
   const [open, setOpen] = useState(false);
   const [searchOpen, setSearchOpen] = useState(false);
   const { theme, toggle } = useTheme();
+  const { user } = useUserAuth();
 
   return (
     <header className="sticky top-0 z-50 shadow-md">
@@ -78,6 +80,16 @@ export default function Header() {
 
           {/* Right */}
           <div className="flex items-center gap-2">
+            <Link
+              to={user ? '/cuenta' : '/login'}
+              aria-label={user ? 'Mi cuenta' : 'Iniciar sesión'}
+              title={user ? `Mi cuenta (${user.name})` : 'Iniciar sesión'}
+              className="hidden sm:inline-flex items-center gap-2 px-3 h-10 rounded-full bg-slate-900 text-white text-xs font-semibold uppercase tracking-wider hover:bg-slate-800 transition-colors"
+            >
+              {user ? <User size={14} /> : <LogIn size={14} />}
+              <span>{user ? user.name.split(' ')[0] : 'Entrar'}</span>
+            </Link>
+
             <button
               onClick={toggle}
               aria-label={theme === 'dark' ? 'Cambiar a modo claro' : 'Cambiar a modo oscuro'}
