@@ -2,6 +2,76 @@
   min-height: 100vh;
 }
 
+/* Default surface (dark theme) */
+.app-surface {
+  background: #0f172a;
+}
+
+/* ========================
+   Light theme overrides
+   Only affects content backgrounds; branded cyan/violet/slate-900 sections
+   remain consistent to preserve identity.
+   ======================== */
+.theme-light .app-surface {
+  background: #f8fafc;
+}
+
+/* Dark content sections -> light */
+.theme-light .bg-slate-900 {
+  background-color: #ffffff !important;
+}
+.theme-light .bg-slate-950 {
+  background-color: #f1f5f9 !important;
+}
+.theme-light .from-slate-900 {
+  --tw-gradient-from: #ffffff var(--tw-gradient-from-position) !important;
+}
+.theme-light .to-slate-800,
+.theme-light .to-slate-950 {
+  --tw-gradient-to: #f1f5f9 var(--tw-gradient-to-position) !important;
+}
+
+/* Text color swaps inside light content */
+.theme-light .bg-slate-900 h1,
+.theme-light .bg-slate-900 h2,
+.theme-light .bg-slate-900 h3,
+.theme-light .bg-slate-900 .text-white {
+  color: #0f172a !important;
+}
+.theme-light .bg-slate-900 .text-slate-300,
+.theme-light .bg-slate-900 .text-slate-400 {
+  color: #475569 !important;
+}
+
+/* Cards inside light content */
+.theme-light .bg-slate-800\/50,
+.theme-light .bg-slate-800\/60,
+.theme-light .bg-slate-800 {
+  background-color: #ffffff !important;
+  border-color: #e2e8f0 !important;
+  box-shadow: 0 1px 3px rgba(15, 23, 42, 0.06);
+}
+.theme-light .bg-slate-800\/50 h3,
+.theme-light .bg-slate-800\/60 h3,
+.theme-light .bg-slate-800 h3 {
+  color: #0f172a !important;
+}
+.theme-light .bg-slate-800\/50 p,
+.theme-light .bg-slate-800\/60 p,
+.theme-light .bg-slate-800 p {
+  color: #475569 !important;
+}
+.theme-light .border-slate-700 {
+  border-color: #e2e8f0 !important;
+}
+
+/* Footer stays dark for contrast */
+
+/* Smooth scroll */
+html {
+  scroll-behavior: smooth;
+}
+
 @keyframes fadeIn {
   from { opacity: 0; transform: translateY(20px); }
   to { opacity: 1; transform: translateY(0); }
@@ -25,6 +95,10 @@
 }
 ::-webkit-scrollbar-thumb:hover {
   background: #0891b2;
+}
+
+.theme-light ::-webkit-scrollbar-track {
+  background: #e2e8f0;
 }
 
 /* Text selection */

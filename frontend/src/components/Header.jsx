@@ -1,11 +1,13 @@
 import React, { useState } from 'react';
 import { Link, NavLink } from 'react-router-dom';
-import { Search, Facebook, Linkedin, Youtube, MessageCircle, Menu, X, Mail, Phone } from 'lucide-react';
+import { Search, Facebook, Linkedin, Youtube, MessageCircle, Menu, X, Mail, Phone, Sun, Moon } from 'lucide-react';
 import { navLinks } from '../mock';
+import useTheme from '../hooks/useTheme';
 
 export default function Header() {
   const [open, setOpen] = useState(false);
   const [searchOpen, setSearchOpen] = useState(false);
+  const { theme, toggle } = useTheme();
 
   return (
     <header className="sticky top-0 z-50 shadow-md">
@@ -76,6 +78,14 @@ export default function Header() {
 
           {/* Right */}
           <div className="flex items-center gap-2">
+            <button
+              onClick={toggle}
+              aria-label={theme === 'dark' ? 'Cambiar a modo claro' : 'Cambiar a modo oscuro'}
+              className="w-10 h-10 rounded-full bg-slate-900/10 border border-slate-900/20 text-slate-900 flex items-center justify-center hover:bg-slate-900 hover:text-cyan-300 transition-all shrink-0"
+            >
+              {theme === 'dark' ? <Sun size={16} /> : <Moon size={16} />}
+            </button>
+
             <button
               onClick={() => setSearchOpen(!searchOpen)}
               className="w-10 h-10 rounded-full bg-gradient-to-r from-violet-500 to-purple-600 text-white flex items-center justify-center hover:shadow-lg hover:shadow-purple-400/40 transition-all shrink-0"

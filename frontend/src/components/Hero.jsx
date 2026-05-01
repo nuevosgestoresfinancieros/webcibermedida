@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 import { heroSlides } from '../mock';
+import AnimatedBackground from './AnimatedBackground';
 
 export default function Hero() {
   const [current, setCurrent] = useState(0);
@@ -22,7 +23,10 @@ export default function Hero() {
             className="absolute inset-0 bg-cover bg-center transition-opacity duration-700"
             style={{ backgroundImage: `url(${slide.image})` }}
           />
-          <div className="absolute inset-0 bg-gradient-to-r from-slate-900/85 via-slate-900/60 to-slate-900/30" />
+          <div className="absolute inset-0 bg-gradient-to-r from-slate-900/90 via-slate-900/65 to-slate-900/40" />
+
+          {/* Animated canvas overlay (particles + matrix) */}
+          <AnimatedBackground />
 
           {/* Neon lines overlay */}
           <div className="absolute inset-0 pointer-events-none">
@@ -34,7 +38,7 @@ export default function Hero() {
           <div className="relative z-10 h-full flex items-center">
             <div className="w-full grid lg:grid-cols-2 gap-8 p-8 lg:p-16">
               <div className="hidden lg:block" />
-              <div className="space-y-6 animate-fadeIn">
+              <div key={slide.id} className="space-y-6 animate-fadeIn">
                 <span className="inline-block px-5 py-2 rounded-full bg-cyan-500/90 text-white text-xs font-bold tracking-[0.2em] uppercase">
                   {slide.tag}
                 </span>
@@ -59,6 +63,7 @@ export default function Hero() {
               <button
                 key={i}
                 onClick={() => setCurrent(i)}
+                aria-label={`Slide ${i + 1}`}
                 className={`transition-all rounded-full ${
                   i === current ? 'w-8 h-2 bg-cyan-400' : 'w-2 h-2 bg-white/60'
                 }`}
@@ -67,12 +72,14 @@ export default function Hero() {
           </div>
           <button
             onClick={() => setCurrent((c) => (c - 1 + heroSlides.length) % heroSlides.length)}
+            aria-label="Anterior"
             className="absolute left-4 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-white/10 backdrop-blur border border-white/20 text-white flex items-center justify-center hover:bg-cyan-500/60 transition-colors z-20"
           >
             <ChevronLeft size={20} />
           </button>
           <button
             onClick={() => setCurrent((c) => (c + 1) % heroSlides.length)}
+            aria-label="Siguiente"
             className="absolute right-4 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-white/10 backdrop-blur border border-white/20 text-white flex items-center justify-center hover:bg-cyan-500/60 transition-colors z-20"
           >
             <ChevronRight size={20} />

@@ -8,6 +8,7 @@ import {
   whyPoints, specializationAreas, aboutImages, services,
   onlineSolutions, cyberAttacks, guideSteps,
 } from '../mock';
+import Reveal from './Reveal';
 
 const iconMap = {
   ShieldAlert, KeyRound, Network, AppWindow, Radar, Bug, FileSearch,
@@ -123,8 +124,7 @@ export function Services() {
           {services.map((s, i) => {
             const Icon = iconMap[s.icon] || ShieldAlert;
             return (
-              <div
-                key={i}
+              <Reveal key={i} delay={i * 60}
                 className="group relative bg-slate-800/50 border border-slate-700 rounded-xl p-7 hover:border-cyan-500/60 hover:-translate-y-1 transition-all duration-300 overflow-hidden"
               >
                 <div className="absolute -right-10 -top-10 w-32 h-32 bg-cyan-500/5 rounded-full group-hover:bg-cyan-500/15 transition-colors"></div>
@@ -145,7 +145,7 @@ export function Services() {
                 <p className="text-slate-400 text-sm leading-relaxed line-clamp-4">
                   {s.desc}
                 </p>
-              </div>
+              </Reveal>
             );
           })}
         </div>
