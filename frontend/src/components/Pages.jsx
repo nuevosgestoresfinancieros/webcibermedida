@@ -3,6 +3,10 @@ import { Mail, Phone, MapPin, Clock, Send } from 'lucide-react';
 import Hero from './Hero';
 import PageHeader from './PageHeader';
 import ContactForm from './ContactForm';
+import TestimonialsCarousel from './TestimonialsCarousel';
+import PartnersCarousel from './PartnersCarousel';
+import StatsBand from './StatsBand';
+import Aurora from './Aurora';
 import {
   WhyCibermedida, About, Services, OnlineSecurity,
   CyberAttacks, Guide, Monitoring, CTA,
@@ -13,11 +17,15 @@ import {
 /* Page: Cibermedida (home) */
 export function CibermedidaPage() {
   return (
-    <>
+    <div className="relative">
+      <Aurora className="-z-10" />
       <Hero />
       <WhyCibermedida />
+      <StatsBand />
       <About />
-    </>
+      <PartnersCarousel />
+      <TestimonialsCarousel />
+    </div>
   );
 }
 

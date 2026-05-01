@@ -3,6 +3,28 @@ body.is-admin-route #emergent-badge {
   display: none !important;
 }
 
+/* Accessibility — visible focus states globally */
+*:focus-visible {
+  outline: 2px solid #06b6d4;
+  outline-offset: 2px;
+}
+button:focus-visible,
+a:focus-visible {
+  border-radius: 4px;
+}
+
+/* Respect reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
 .App {
   min-height: 100vh;
 }
@@ -85,6 +107,35 @@ html {
 .animate-fadeIn {
   animation: fadeIn 0.8s ease-out;
 }
+
+/* Marquee (partners carousel) */
+@keyframes marquee {
+  from { transform: translateX(0); }
+  to { transform: translateX(-50%); }
+}
+.animate-marquee {
+  animation: marquee 35s linear infinite;
+}
+.animate-marquee:hover {
+  animation-play-state: paused;
+}
+
+/* Aurora */
+@keyframes aurora-1 {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  50% { transform: translate(10%, 8%) scale(1.15); }
+}
+@keyframes aurora-2 {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  50% { transform: translate(-10%, -5%) scale(1.1); }
+}
+@keyframes aurora-3 {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  50% { transform: translate(-8%, 10%) scale(1.2); }
+}
+.animate-aurora-1 { animation: aurora-1 18s ease-in-out infinite; }
+.animate-aurora-2 { animation: aurora-2 22s ease-in-out infinite; }
+.animate-aurora-3 { animation: aurora-3 25s ease-in-out infinite; }
 
 /* Custom scrollbar */
 ::-webkit-scrollbar {
