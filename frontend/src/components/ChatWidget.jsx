@@ -1,7 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { MessageCircle, X, Send, Bot, User, Loader2 } from 'lucide-react';
 import { api } from '../utils/api';
-import { useUserAuth } from '../contexts/UserAuthContext';
 
 const INITIAL_GREETING = {
   role: 'assistant',
@@ -9,7 +8,6 @@ const INITIAL_GREETING = {
 };
 
 export default function ChatWidget() {
-  const { authHeaders } = useUserAuth();
   const [open, setOpen] = useState(false);
   const [messages, setMessages] = useState([INITIAL_GREETING]);
   const [input, setInput] = useState('');
@@ -31,10 +29,7 @@ export default function ChatWidget() {
     setMessages((m) => [...m, { role: 'user', text }]);
     setLoading(true);
     try {
-      const { data } = await api.post('/chat/message',
-        { message: text, session_id: sessionId },
-        { headers: authHeaders() }
-      );
+      const { data } = await api.post('/chat/message', { message: text, session_id: sessionId });
       setSessionId(data.session_id);
       setMessages((m) => [...m, { role: 'assistant', text: data.reply }]);
     } catch (err) {

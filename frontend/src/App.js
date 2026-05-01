@@ -12,11 +12,7 @@ import {
 import ProyectosPage from './components/ProyectosPage';
 import AdminLogin from './pages/AdminLogin';
 import AdminDashboard from './pages/AdminDashboard';
-import LoginPage from './pages/LoginPage';
-import RegisterPage from './pages/RegisterPage';
-import AccountPage from './pages/AccountPage';
 import { AdminAuthProvider } from './contexts/AdminAuthContext';
-import { UserAuthProvider } from './contexts/UserAuthContext';
 
 const TITLES = {
   '/': 'Cibermedida | Servicios de Ciberseguridad',
@@ -28,9 +24,6 @@ const TITLES = {
   '/noticias': 'Noticias | Cibermedida',
   '/politicas': 'Políticas | Cibermedida',
   '/contacto': 'Contacto | Cibermedida',
-  '/login': 'Iniciar sesión | Cibermedida',
-  '/registro': 'Crear cuenta | Cibermedida',
-  '/cuenta': 'Mi cuenta | Cibermedida',
 };
 
 function RouteSideEffects() {
@@ -58,39 +51,32 @@ function App() {
   return (
     <div className="App">
       <BrowserRouter>
-        <UserAuthProvider>
-          <AdminAuthProvider>
-            <RouteSideEffects />
-            <Routes>
-              {/* Admin routes (no layout) */}
-              <Route path="/admin/login" element={<AdminLogin />} />
-              <Route path="/admin" element={<AdminDashboard />} />
+        <AdminAuthProvider>
+          <RouteSideEffects />
+          <Routes>
+            {/* Admin routes (no public layout) */}
+            <Route path="/admin/login" element={<AdminLogin />} />
+            <Route path="/admin" element={<AdminDashboard />} />
 
-              {/* Client auth routes (no layout) */}
-              <Route path="/login" element={<LoginPage />} />
-              <Route path="/registro" element={<RegisterPage />} />
-              <Route path="/cuenta" element={<AccountPage />} />
-
-              {/* Public routes with layout */}
-              <Route path="/*" element={
-                <PublicLayout>
-                  <Routes>
-                    <Route path="/" element={<CibermedidaPage />} />
-                    <Route path="/soluciones" element={<SolucionesPage />} />
-                    <Route path="/recursos" element={<RecursosPage />} />
-                    <Route path="/proyectos" element={<ProyectosPage />} />
-                    <Route path="/inteligencia-artificial" element={<IAPage />} />
-                    <Route path="/preguntanos" element={<PreguntanosPage />} />
-                    <Route path="/noticias" element={<NoticiasPage />} />
-                    <Route path="/politicas" element={<PoliticasPage />} />
-                    <Route path="/contacto" element={<ContactoPage />} />
-                    <Route path="*" element={<CibermedidaPage />} />
-                  </Routes>
-                </PublicLayout>
-              } />
-            </Routes>
-          </AdminAuthProvider>
-        </UserAuthProvider>
+            {/* Public routes with layout */}
+            <Route path="/*" element={
+              <PublicLayout>
+                <Routes>
+                  <Route path="/" element={<CibermedidaPage />} />
+                  <Route path="/soluciones" element={<SolucionesPage />} />
+                  <Route path="/recursos" element={<RecursosPage />} />
+                  <Route path="/proyectos" element={<ProyectosPage />} />
+                  <Route path="/inteligencia-artificial" element={<IAPage />} />
+                  <Route path="/preguntanos" element={<PreguntanosPage />} />
+                  <Route path="/noticias" element={<NoticiasPage />} />
+                  <Route path="/politicas" element={<PoliticasPage />} />
+                  <Route path="/contacto" element={<ContactoPage />} />
+                  <Route path="*" element={<CibermedidaPage />} />
+                </Routes>
+              </PublicLayout>
+            } />
+          </Routes>
+        </AdminAuthProvider>
       </BrowserRouter>
     </div>
   );
