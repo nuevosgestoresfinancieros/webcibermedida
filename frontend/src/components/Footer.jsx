@@ -14,7 +14,7 @@ export default function Footer() {
             <div className="space-y-4">
               <Link to="/" className="inline-block">
                 <img
-                  src="https://customer-assets.emergentagent.com/job_health-portal-build/artifacts/ujk41ayl_logo%20sin%20fondo.png"
+                  src="/logo-cibermedida.png"
                   alt="Cibermedida"
                   className="h-20 w-auto object-contain"
                 />
