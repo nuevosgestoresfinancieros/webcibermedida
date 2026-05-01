@@ -101,3 +101,144 @@
 #====================================================================================================
 # Testing Data - Main Agent and testing sub agent both should log testing data below this section
 #====================================================================================================
+
+user_problem_statement: "Probar los endpoints del backend Cibermedida recién implementados. Todos los endpoints deben responder correctamente."
+
+backend:
+  - task: "Root API endpoint"
+    implemented: true
+    working: true
+    file: "/app/backend/server.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: true
+        agent: "testing"
+        comment: "GET /api/ returns correct response with message='Cibermedida API' and version='1.0'"
+
+  - task: "Contact form submission"
+    implemented: true
+    working: true
+    file: "/app/backend/server.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: true
+        agent: "testing"
+        comment: "POST /api/contact successfully creates contact messages with all fields (name, email, message, company, phone). Returns ContactMessage with generated UUID."
+
+  - task: "Contact form email validation"
+    implemented: true
+    working: true
+    file: "/app/backend/server.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: true
+        agent: "testing"
+        comment: "POST /api/contact with invalid email correctly returns 422 validation error"
+
+  - task: "Newsletter subscription"
+    implemented: true
+    working: true
+    file: "/app/backend/server.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: true
+        agent: "testing"
+        comment: "POST /api/newsletter successfully creates newsletter subscriptions. Idempotent behavior confirmed - duplicate email returns existing subscriber with same ID."
+
+  - task: "Admin authentication"
+    implemented: true
+    working: true
+    file: "/app/backend/server.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: true
+        agent: "testing"
+        comment: "POST /api/admin/login works correctly with username='admin' and password='cibermedida2026'. Returns JWT token and username. Invalid credentials correctly return 401."
+
+  - task: "Admin token verification"
+    implemented: true
+    working: true
+    file: "/app/backend/server.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: true
+        agent: "testing"
+        comment: "GET /api/admin/me correctly requires authentication. Returns 401 without token, returns {username: 'admin'} with valid token."
+
+  - task: "Admin contact messages management"
+    implemented: true
+    working: true
+    file: "/app/backend/server.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: true
+        agent: "testing"
+        comment: "GET /api/admin/messages lists all contact messages. PATCH /api/admin/messages/{id} successfully updates read status. DELETE /api/admin/messages/{id} successfully deletes messages."
+
+  - task: "Admin newsletter management"
+    implemented: true
+    working: true
+    file: "/app/backend/server.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: true
+        agent: "testing"
+        comment: "GET /api/admin/newsletter lists all subscribers. DELETE /api/admin/newsletter/{id} successfully deletes subscribers."
+
+  - task: "Admin settings management"
+    implemented: true
+    working: true
+    file: "/app/backend/server.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: true
+        agent: "testing"
+        comment: "GET /api/admin/settings returns settings with username, openai_api_key_set flag, and masked key. PATCH /api/admin/settings successfully updates OpenAI API key (with masking) and password. Correctly validates current_password and returns 401 on mismatch. Password change and restoration tested successfully."
+
+frontend:
+  - task: "Frontend testing"
+    implemented: false
+    working: "NA"
+    file: ""
+    stuck_count: 0
+    priority: "low"
+    needs_retesting: false
+    status_history:
+      - working: "NA"
+        agent: "testing"
+        comment: "Frontend testing not performed as per testing agent protocol - only backend testing required"
+
+metadata:
+  created_by: "testing_agent"
+  version: "1.0"
+  test_sequence: 1
+  run_ui: false
+
+test_plan:
+  current_focus:
+    - "All backend endpoints tested and verified"
+  stuck_tasks: []
+  test_all: false
+  test_priority: "high_first"
+
+agent_communication:
+  - agent: "testing"
+    message: "Completed comprehensive testing of all 20 Cibermedida backend endpoints. All tests passed successfully. Public endpoints (root, contact, newsletter), admin authentication (login, token verification), and all admin CRUD operations (messages, newsletter, settings) are working correctly. Password change functionality verified. All endpoints use correct external URL from REACT_APP_BACKEND_URL with /api prefix."

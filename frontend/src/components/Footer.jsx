@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Facebook, Linkedin, Youtube, MessageCircle, Mail, Phone, MapPin, X } from 'lucide-react';
 import { navLinks } from '../mock';
+import NewsletterForm from './NewsletterForm';
 
 export default function Footer() {
   const [cookieVisible, setCookieVisible] = useState(true);
@@ -62,17 +63,21 @@ export default function Footer() {
               <ul className="space-y-3 text-sm">
                 <li className="flex items-start gap-3">
                   <MapPin size={16} className="text-cyan-400 mt-0.5 shrink-0" />
-                  <span>España, Madrid</span>
+                  <span>Madrid, España</span>
                 </li>
                 <li className="flex items-start gap-3">
                   <Mail size={16} className="text-cyan-400 mt-0.5 shrink-0" />
-                  <a href="mailto:info@cibermedida.es" className="hover:text-cyan-400">info@cibermedida.es</a>
+                  <a href="mailto:jfloradmin@cibermedida.es" className="hover:text-cyan-400">jfloradmin@cibermedida.es</a>
                 </li>
                 <li className="flex items-start gap-3">
                   <Phone size={16} className="text-cyan-400 mt-0.5 shrink-0" />
-                  <a href="tel:+34000000000" className="hover:text-cyan-400">+34 000 000 000</a>
+                  <a href="tel:+34687216537" className="hover:text-cyan-400">+34 687 216 537</a>
                 </li>
               </ul>
+              <div className="mt-5">
+                <h5 className="text-white text-xs font-bold uppercase tracking-wider mb-2">Newsletter</h5>
+                <NewsletterForm />
+              </div>
             </div>
           </div>
 

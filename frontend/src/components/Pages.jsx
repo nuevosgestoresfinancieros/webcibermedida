@@ -2,6 +2,7 @@ import React from 'react';
 import { Mail, Phone, MapPin, Clock, Send } from 'lucide-react';
 import Hero from './Hero';
 import PageHeader from './PageHeader';
+import ContactForm from './ContactForm';
 import {
   WhyCibermedida, About, Services, OnlineSecurity,
   CyberAttacks, Guide, Monitoring, CTA,
@@ -117,56 +118,28 @@ export function ContactoPage() {
             <ul className="space-y-5">
               {[
                 { Icon: MapPin, title: 'Dirección', text: 'Madrid, España' },
-                { Icon: Mail, title: 'Email', text: 'info@cibermedida.es' },
-                { Icon: Phone, title: 'Teléfono', text: '+34 000 000 000' },
+                { Icon: Mail, title: 'Email', text: 'jfloradmin@cibermedida.es', href: 'mailto:jfloradmin@cibermedida.es' },
+                { Icon: Phone, title: 'Teléfono', text: '+34 687 216 537', href: 'tel:+34687216537' },
                 { Icon: Clock, title: 'Horario', text: 'Lun – Vie, 9:00 – 18:00' },
-              ].map(({ Icon, title, text }) => (
+              ].map(({ Icon, title, text, href }) => (
                 <li key={title} className="flex items-start gap-4">
                   <div className="w-12 h-12 rounded-lg bg-cyan-500/10 border border-cyan-500/40 text-cyan-400 flex items-center justify-center shrink-0">
                     <Icon size={22} />
                   </div>
                   <div>
                     <div className="text-white font-semibold">{title}</div>
-                    <div className="text-slate-400">{text}</div>
+                    {href ? (
+                      <a href={href} className="text-slate-400 hover:text-cyan-400 transition-colors">{text}</a>
+                    ) : (
+                      <div className="text-slate-400">{text}</div>
+                    )}
                   </div>
                 </li>
               ))}
             </ul>
           </div>
 
-          {/* Form */}
-          <form
-            onSubmit={(e) => {
-              e.preventDefault();
-              alert('Gracias por contactarnos. Te responderemos en breve.');
-            }}
-            className="bg-slate-800/60 border border-slate-700 rounded-xl p-8 space-y-5"
-          >
-            <div className="grid sm:grid-cols-2 gap-4">
-              <div>
-                <label className="block text-sm text-slate-300 mb-1">Nombre</label>
-                <input required className="w-full px-4 py-3 rounded-md bg-slate-900 border border-slate-700 text-white outline-none focus:border-cyan-500" />
-              </div>
-              <div>
-                <label className="block text-sm text-slate-300 mb-1">Empresa</label>
-                <input className="w-full px-4 py-3 rounded-md bg-slate-900 border border-slate-700 text-white outline-none focus:border-cyan-500" />
-              </div>
-            </div>
-            <div>
-              <label className="block text-sm text-slate-300 mb-1">Email</label>
-              <input required type="email" className="w-full px-4 py-3 rounded-md bg-slate-900 border border-slate-700 text-white outline-none focus:border-cyan-500" />
-            </div>
-            <div>
-              <label className="block text-sm text-slate-300 mb-1">Mensaje</label>
-              <textarea required rows={5} className="w-full px-4 py-3 rounded-md bg-slate-900 border border-slate-700 text-white outline-none focus:border-cyan-500 resize-none" />
-            </div>
-            <button
-              type="submit"
-              className="w-full inline-flex items-center justify-center gap-2 px-8 py-3.5 rounded-md bg-gradient-to-r from-violet-500 to-purple-600 text-white font-semibold hover:shadow-xl hover:shadow-purple-500/40 hover:-translate-y-0.5 transition-all"
-            >
-              <Send size={18} /> Enviar mensaje
-            </button>
-          </form>
+          <ContactForm />
         </div>
       </section>
     </>

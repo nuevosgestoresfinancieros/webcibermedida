@@ -9,6 +9,9 @@ import {
   PreguntanosPage, NoticiasPage, PoliticasPage, ContactoPage,
 } from './components/Pages';
 import ProyectosPage from './components/ProyectosPage';
+import AdminLogin from './pages/AdminLogin';
+import AdminDashboard from './pages/AdminDashboard';
+import { AdminAuthProvider } from './contexts/AdminAuthContext';
 
 const TITLES = {
   '/': 'Cibermedida | Servicios de Ciberseguridad',
@@ -31,7 +34,7 @@ function RouteSideEffects() {
   return null;
 }
 
-function Layout({ children }) {
+function PublicLayout({ children }) {
   return (
     <div className="min-h-screen flex flex-col app-surface">
       <Header />
@@ -46,21 +49,32 @@ function App() {
   return (
     <div className="App">
       <BrowserRouter>
-        <RouteSideEffects />
-        <Layout>
+        <AdminAuthProvider>
+          <RouteSideEffects />
           <Routes>
-            <Route path="/" element={<CibermedidaPage />} />
-            <Route path="/soluciones" element={<SolucionesPage />} />
-            <Route path="/recursos" element={<RecursosPage />} />
-            <Route path="/proyectos" element={<ProyectosPage />} />
-            <Route path="/inteligencia-artificial" element={<IAPage />} />
-            <Route path="/preguntanos" element={<PreguntanosPage />} />
-            <Route path="/noticias" element={<NoticiasPage />} />
-            <Route path="/politicas" element={<PoliticasPage />} />
-            <Route path="/contacto" element={<ContactoPage />} />
-            <Route path="*" element={<CibermedidaPage />} />
+            {/* Admin routes (no header/footer) */}
+            <Route path="/admin/login" element={<AdminLogin />} />
+            <Route path="/admin" element={<AdminDashboard />} />
+
+            {/* Public routes */}
+            <Route path="/*" element={
+              <PublicLayout>
+                <Routes>
+                  <Route path="/" element={<CibermedidaPage />} />
+                  <Route path="/soluciones" element={<SolucionesPage />} />
+                  <Route path="/recursos" element={<RecursosPage />} />
+                  <Route path="/proyectos" element={<ProyectosPage />} />
+                  <Route path="/inteligencia-artificial" element={<IAPage />} />
+                  <Route path="/preguntanos" element={<PreguntanosPage />} />
+                  <Route path="/noticias" element={<NoticiasPage />} />
+                  <Route path="/politicas" element={<PoliticasPage />} />
+                  <Route path="/contacto" element={<ContactoPage />} />
+                  <Route path="*" element={<CibermedidaPage />} />
+                </Routes>
+              </PublicLayout>
+            } />
           </Routes>
-        </Layout>
+        </AdminAuthProvider>
       </BrowserRouter>
     </div>
   );
