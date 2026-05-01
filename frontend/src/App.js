@@ -7,6 +7,7 @@ import {
   CibermedidaPage, SolucionesPage, RecursosPage, IAPage,
   PreguntanosPage, NoticiasPage, PoliticasPage, ContactoPage,
 } from './components/Pages';
+import ProyectosPage from './components/ProyectosPage';
 
 /* Scroll to top on route change for clear page navigation */
 function ScrollToTop() {
@@ -37,6 +38,7 @@ function App() {
             <Route path="/" element={<CibermedidaPage />} />
             <Route path="/soluciones" element={<SolucionesPage />} />
             <Route path="/recursos" element={<RecursosPage />} />
+            <Route path="/proyectos" element={<ProyectosPage />} />
             <Route path="/inteligencia-artificial" element={<IAPage />} />
             <Route path="/preguntanos" element={<PreguntanosPage />} />
             <Route path="/noticias" element={<NoticiasPage />} />

@@ -4,12 +4,90 @@ export const navLinks = [
   { label: 'Cibermedida', to: '/' },
   { label: 'Soluciones', to: '/soluciones' },
   { label: 'Recursos', to: '/recursos' },
+  { label: 'Proyectos', to: '/proyectos' },
   { label: 'Inteligencia Artificial', to: '/inteligencia-artificial' },
   { label: 'Preguntanos', to: '/preguntanos' },
   { label: 'Noticias', to: '/noticias' },
   { label: 'Políticas', to: '/politicas' },
   { label: 'Contacto', to: '/contacto' },
 ];
+
+export const projects = [
+  {
+    id: 1,
+    title: 'Cibermedida.es',
+    description: 'Web corporativa oficial de Cibermedida con información sobre servicios de ciberseguridad, formación, inteligencia artificial y soluciones de transformación digital.',
+    image: 'https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=800&q=80',
+    tags: ['Web', 'Corporativa', 'Ciberseguridad'],
+    category: 'Web',
+    appUrl: 'https://cibermedida.es',
+  },
+  {
+    id: 2,
+    title: 'API Cibermedida',
+    description: 'API central de servicios de Cibermedida. Expone endpoints seguros para autenticación, integración entre plataformas y consumo de datos por parte de los distintos módulos.',
+    image: 'https://images.unsplash.com/photo-1558494949-ef010cbdcc31?w=800&q=80',
+    tags: ['REST API', 'Backend', 'Integraciones'],
+    category: 'Infraestructura',
+    appUrl: 'https://api.cibermedida.es',
+  },
+  {
+    id: 3,
+    title: 'Aula Virtual',
+    description: 'Aula virtual de Cibermedida para la impartición de cursos online. Incluye gestión de alumnos, contenidos multimedia, evaluaciones y seguimiento del progreso formativo.',
+    image: 'https://images.unsplash.com/photo-1522202176988-66273c2fd55f?w=800&q=80',
+    tags: ['LMS', 'Formación online', 'E-learning'],
+    category: 'Formación',
+    appUrl: 'https://aula.cibermedida.es',
+  },
+  {
+    id: 4,
+    title: 'Entrenamiento Comunicativo',
+    description: 'Plataforma de entrenamiento en competencias comunicativas con ejercicios prácticos, simulaciones interactivas y evaluación guiada para mejorar habilidades profesionales.',
+    image: 'https://images.unsplash.com/photo-1521737604893-d14cc237f11d?w=800&q=80',
+    tags: ['Formación', 'Comunicación', 'Interactivo'],
+    category: 'Formación',
+    appUrl: 'https://entrenamiento.comunicativo.cibermedida.es',
+  },
+  {
+    id: 5,
+    title: 'Gestión Cibermedida',
+    description: 'Panel de gestión interna para la administración de usuarios, cursos, proyectos y recursos corporativos de Cibermedida desde un único entorno centralizado.',
+    image: 'https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=800&q=80',
+    tags: ['Panel', 'Administración', 'Interno'],
+    category: 'Gestión',
+    appUrl: 'https://gestion.cibermedida.es',
+  },
+  {
+    id: 6,
+    title: 'Markitplace',
+    description: 'Marketplace de Cibermedida con catálogo de servicios, cursos y productos digitales disponibles para empresas, instituciones educativas y administraciones públicas.',
+    image: 'https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?w=800&q=80',
+    tags: ['Marketplace', 'E-commerce', 'Catálogo'],
+    category: 'Marketplace',
+    appUrl: 'https://markitplace.cibermedida.es',
+  },
+  {
+    id: 7,
+    title: 'SCORM Cibermedida',
+    description: 'Plataforma SCORM para la distribución y ejecución de contenidos formativos estandarizados, compatible con los principales LMS y herramientas de autoría.',
+    image: 'https://images.unsplash.com/photo-1434030216411-0b793f4b4173?w=800&q=80',
+    tags: ['SCORM', 'E-learning', 'Estándar'],
+    category: 'Formación',
+    appUrl: 'https://scorm.cibermedida.es',
+  },
+  {
+    id: 8,
+    title: 'Signados',
+    description: 'Solución de firma digital y certificación de documentos para procesos electrónicos seguros. Integra verificación, trazabilidad y cumplimiento normativo.',
+    image: 'https://images.unsplash.com/photo-1450101499163-c8848c66ca85?w=800&q=80',
+    tags: ['Firma digital', 'Certificación', 'Legal'],
+    category: 'Seguridad',
+    appUrl: 'https://signados.cibermedida.es',
+  },
+];
+
+export const projectCategories = ['Todos', 'Web', 'Infraestructura', 'Formación', 'Gestión', 'Marketplace', 'Seguridad'];
 
 export const heroSlides = [
   {
