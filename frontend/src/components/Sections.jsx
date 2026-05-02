@@ -3,6 +3,7 @@ import {
   CheckCircle2, ShieldAlert, KeyRound, Network, AppWindow, Radar, Bug,
   FileSearch, ScanSearch, CloudCog, Siren, BadgeCheck, GraduationCap,
   Database, ServerCrash, Users, Fish, Lock, ChevronRight, Globe, Quote,
+  Target, Sparkles,
 } from 'lucide-react';
 import {
   whyPoints, specializationAreas, aboutImages, services,
@@ -64,42 +65,86 @@ export function WhyCibermedida() {
 }
 
 export function About() {
+  const pillars = [
+    { icon: Target, title: 'Aplicación práctica', desc: 'Conocimientos aplicables desde el primer día, no teoría abstracta.' },
+    { icon: Sparkles, title: 'Actualización constante', desc: 'Contenidos revisados con cada avance del sector tecnológico.' },
+    { icon: Users, title: 'Adaptación a tu entorno', desc: 'Programas ajustados a empresas, centros formativos y administraciones.' },
+  ];
   return (
-    <section id="cibermedida" className="bg-slate-900 py-24 relative overflow-hidden">
-      <div className="absolute inset-0 opacity-20" style={{
+    <section id="cibermedida" className="bg-slate-900 py-20 md:py-24 relative overflow-hidden">
+      <div className="absolute inset-0 opacity-20 pointer-events-none" style={{
         backgroundImage: 'radial-gradient(circle at 20% 30%, rgba(34,211,238,0.2) 0%, transparent 50%)'
       }}></div>
-      <div className="max-w-[1400px] mx-auto px-4 lg:px-8 grid lg:grid-cols-2 gap-12 items-center relative">
-        <div className="grid grid-cols-2 gap-4">
-          <div className="space-y-4">
-            <div className="rounded-lg overflow-hidden aspect-[3/4]">
-              <img src={aboutImages[0]} alt="" className="w-full h-full object-cover" />
-            </div>
-            <div className="rounded-lg overflow-hidden aspect-[4/3]">
-              <img src={aboutImages[1]} alt="" className="w-full h-full object-cover" />
-            </div>
+
+      <div className="max-w-[1200px] mx-auto px-4 lg:px-8 grid lg:grid-cols-2 gap-12 lg:gap-16 items-center relative">
+        {/* Visual block */}
+        <div className="relative">
+          <div className="rounded-2xl overflow-hidden border border-slate-800 shadow-2xl aspect-[4/5]">
+            <img src={aboutImages[0]} alt="Equipo Cibermedida" className="w-full h-full object-cover" />
           </div>
-          <div className="mt-12">
-            <div className="rounded-lg overflow-hidden aspect-[3/4]">
-              <img src={aboutImages[2]} alt="" className="w-full h-full object-cover" />
-            </div>
+          {/* Secondary image */}
+          <div className="hidden md:block absolute -bottom-8 -right-6 w-56 aspect-[4/3] rounded-xl overflow-hidden border-4 border-slate-900 shadow-2xl">
+            <img src={aboutImages[1]} alt="Formación Cibermedida" className="w-full h-full object-cover" />
           </div>
+          {/* Floating stat badge */}
+          <div className="absolute -top-5 -left-5 md:-left-8 bg-cyan-400 text-slate-900 rounded-xl p-4 shadow-xl border-4 border-slate-900">
+            <div className="text-3xl md:text-4xl font-black leading-none">5+</div>
+            <div className="text-[10px] font-bold uppercase tracking-wider mt-1">Años de experiencia</div>
+          </div>
+          {/* Decorative ring */}
+          <div className="absolute -z-0 -top-10 -right-10 w-32 h-32 rounded-full border-2 border-cyan-500/20 hidden lg:block"></div>
         </div>
 
+        {/* Content */}
         <div className="space-y-6">
-          <span className="inline-block px-5 py-2 rounded-full bg-cyan-500 text-white text-xs font-bold tracking-[0.15em] uppercase">
+          <span className="inline-block px-5 py-2 rounded-full bg-cyan-500/15 border border-cyan-500/40 text-cyan-300 text-xs font-bold tracking-[0.15em] uppercase">
             Sobre Cibermedida
           </span>
-          <h2 className="text-white text-3xl md:text-5xl font-bold leading-tight">
+          <h2 className="text-white text-3xl md:text-4xl lg:text-5xl font-bold leading-tight">
             Entidad especializada en formación técnica y transformación digital
           </h2>
           <p className="text-slate-300 text-base md:text-lg leading-relaxed">
-            Cibermedida desarrolla e imparte programas formativos dirigidos a empresas, centros de formación y administración pública, combinando experiencia técnica real con metodología docente estructurada. El enfoque se centra en la aplicación práctica de conocimientos, la actualización constante y la adaptación a entornos profesionales, académicos y organizativos.
+            Desarrollamos e impartimos programas formativos para empresas, centros de formación y administración pública, combinando experiencia técnica real con metodología docente estructurada.
           </p>
-          <div className="pt-4">
-            <button className="px-8 py-3.5 rounded-md bg-gradient-to-r from-violet-500 to-purple-600 text-white font-semibold hover:shadow-xl hover:shadow-purple-500/40 hover:-translate-y-0.5 transition-all">
+
+          {/* Pillars */}
+          <ul className="space-y-3 pt-2">
+            {pillars.map((p) => {
+              const Icon = p.icon;
+              return (
+                <li key={p.title} className="flex items-start gap-3 bg-slate-800/40 border border-slate-700/60 rounded-lg p-3 hover:border-cyan-500/40 transition-colors">
+                  <div className="w-9 h-9 rounded-md bg-cyan-500/15 border border-cyan-500/40 text-cyan-400 flex items-center justify-center shrink-0">
+                    <Icon size={16} />
+                  </div>
+                  <div>
+                    <div className="text-white font-semibold text-sm">{p.title}</div>
+                    <div className="text-slate-400 text-sm leading-snug">{p.desc}</div>
+                  </div>
+                </li>
+              );
+            })}
+          </ul>
+
+          {/* Mini stats */}
+          <div className="grid grid-cols-2 gap-4 pt-4 border-t border-slate-800">
+            <div>
+              <div className="text-cyan-400 text-2xl md:text-3xl font-black">50+</div>
+              <div className="text-slate-400 text-xs uppercase tracking-wider font-semibold mt-0.5">Empresas formadas</div>
+            </div>
+            <div>
+              <div className="text-cyan-400 text-2xl md:text-3xl font-black">1.000+</div>
+              <div className="text-slate-400 text-xs uppercase tracking-wider font-semibold mt-0.5">Alumnos capacitados</div>
+            </div>
+          </div>
+
+          {/* CTAs */}
+          <div className="flex flex-wrap items-center gap-3 pt-2">
+            <a href="/contacto" className="inline-flex items-center justify-center px-6 py-3 rounded-md bg-gradient-to-r from-violet-500 to-purple-600 text-white font-semibold hover:shadow-xl hover:shadow-purple-500/40 hover:-translate-y-0.5 transition-all">
               Solicitar información
-            </button>
+            </a>
+            <a href="/sobre-nosotros" className="inline-flex items-center justify-center px-6 py-3 rounded-md bg-transparent border border-slate-600 text-slate-200 font-semibold hover:border-cyan-500 hover:text-cyan-400 transition-colors">
+              Conocer al equipo
+            </a>
           </div>
         </div>
       </div>
