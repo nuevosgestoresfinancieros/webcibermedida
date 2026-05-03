@@ -538,6 +538,86 @@ async def chat_message(payload: ChatRequest, user=Depends(get_optional_user)):
 
 # ==================== Mount ====================
 
+# ---------- Admin: generic content CRUD ----------
+
+CONTENT_COLLECTIONS = {
+    'projects': 'content_projects',
+    'blog': 'content_blog',
+    'testimonials': 'content_testimonials',
+    'faqs': 'content_faqs',
+    'services': 'content_services',
+    'cases': 'content_cases',
+    'team': 'content_team',
+    'partners': 'content_partners',
+}
+
+
+def _content_coll(entity: str):
+    if entity not in CONTENT_COLLECTIONS:
+        raise HTTPException(status_code=404, detail=f'Unknown entity: {entity}')
+    return db[CONTENT_COLLECTIONS[entity]]
+
+
+@api_router.get('/admin/content/{entity}')
+async def content_list(entity: str, admin=Depends(get_current_admin)):
+    coll = _content_coll(entity)
+    cursor = coll.find().sort('created_at', -1)
+    items = []
+    async for doc in cursor:
+        doc.pop('_id', None)
+        items.append(doc)
+    return items
+
+
+@api_router.post('/admin/content/{entity}')
+async def content_create(entity: str, data: dict, admin=Depends(get_current_admin)):
+    coll = _content_coll(entity)
+    doc = dict(data)
+    doc['id'] = str(uuid.uuid4())
+    doc['created_at'] = utcnow()
+    doc['updated_at'] = utcnow()
+    await coll.insert_one(doc)
+    doc.pop('_id', None)
+    return doc
+
+
+@api_router.patch('/admin/content/{entity}/{item_id}')
+async def content_update(entity: str, item_id: str, data: dict, admin=Depends(get_current_admin)):
+    coll = _content_coll(entity)
+    data = {k: v for k, v in data.items() if k not in ('id', '_id', 'created_at')}
+    data['updated_at'] = utcnow()
+    result = await coll.find_one_and_update(
+        {'id': item_id}, {'$set': data}, return_document=True
+    )
+    if not result:
+        raise HTTPException(status_code=404, detail='Not found')
+    result.pop('_id', None)
+    return result
+
+
+@api_router.delete('/admin/content/{entity}/{item_id}')
+async def content_delete(entity: str, item_id: str, admin=Depends(get_current_admin)):
+    coll = _content_coll(entity)
+    res = await coll.delete_one({'id': item_id})
+    if res.deleted_count == 0:
+        raise HTTPException(status_code=404, detail='Not found')
+    return {'ok': True}
+
+
+# Public content endpoint (no auth) - used by frontend to fetch latest data
+@api_router.get('/content/{entity}')
+async def content_public_list(entity: str):
+    coll = _content_coll(entity)
+    cursor = coll.find({'published': {'$ne': False}}).sort('order', 1).limit(500)
+    items = []
+    async for doc in cursor:
+        doc.pop('_id', None)
+        items.append(doc)
+    return items
+
+
+# ==================== Mount ====================
+
 app.include_router(api_router)
 
 app.add_middleware(

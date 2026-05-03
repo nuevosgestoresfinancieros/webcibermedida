@@ -3,9 +3,12 @@ import { Navigate, Link } from 'react-router-dom';
 import {
   LogOut, Inbox, MailOpen, Users, Settings as SettingsIcon, Trash2,
   Check, RotateCw, Key, Eye, EyeOff, ExternalLink, AlertCircle, CheckCircle2,
+  FileEdit,
 } from 'lucide-react';
 import { api } from '../utils/api';
 import { useAdminAuth } from '../contexts/AdminAuthContext';
+import ContentManager from '../components/ContentManager';
+import { CONTENT_SCHEMAS } from '../contentSchemas';
 
 function formatDate(iso) {
   if (!iso) return '';
@@ -117,6 +120,7 @@ export default function AdminDashboard() {
           {[
             { id: 'messages', label: 'Mensajes', icon: Inbox },
             { id: 'newsletter', label: 'Newsletter', icon: Users },
+            { id: 'content', label: 'Contenido', icon: FileEdit },
             { id: 'settings', label: 'Ajustes', icon: SettingsIcon },
           ].map((t) => {
             const Icon = t.icon;
@@ -144,8 +148,35 @@ export default function AdminDashboard() {
 
         {tab === 'messages' && <MessagesTable items={messages} onToggleRead={toggleRead} onDelete={removeMsg} />}
         {tab === 'newsletter' && <NewsletterTable items={subs} onDelete={removeSub} />}
+        {tab === 'content' && <ContentHub />}
         {tab === 'settings' && <SettingsPanel settings={settings} onSaved={load} />}
       </main>
+    </div>
+  );
+}
+
+function ContentHub() {
+  const entities = Object.keys(CONTENT_SCHEMAS);
+  const [sub, setSub] = useState(entities[0]);
+  return (
+    <div className="space-y-4">
+      <div className="flex flex-wrap gap-2 bg-slate-900/60 border border-slate-800 rounded-lg p-2">
+        {entities.map((e) => {
+          const active = sub === e;
+          return (
+            <button
+              key={e}
+              onClick={() => setSub(e)}
+              className={`px-4 py-2 rounded-md text-sm font-semibold transition-colors ${
+                active ? 'bg-cyan-500 text-slate-900' : 'bg-slate-800/60 text-slate-300 hover:bg-slate-800'
+              }`}
+            >
+              {CONTENT_SCHEMAS[e].label}
+            </button>
+          );
+        })}
+      </div>
+      <ContentManager entity={sub} />
     </div>
   );
 }

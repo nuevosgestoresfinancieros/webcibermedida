@@ -8,7 +8,7 @@ import ChatWidget from './components/ChatWidget';
 import CustomCursor from './components/CustomCursor';
 import {
   CibermedidaPage, SolucionesPage, RecursosPage, IAPage,
-  PreguntanosPage, NoticiasPage, PoliticasPage, ContactoPage,
+  PreguntanosPage, NoticiasPage, ContactoPage,
 } from './components/Pages';
 import ProyectosPage from './components/ProyectosPage';
 import AdminLogin from './pages/AdminLogin';
@@ -18,6 +18,7 @@ import FAQPage from './pages/FAQPage';
 import CasosExitoPage from './pages/CasosExitoPage';
 import BlogPage from './pages/BlogPage';
 import BlogDetailPage from './pages/BlogDetailPage';
+import PoliticasPage from './pages/PoliticasPage';
 import { AdminAuthProvider } from './contexts/AdminAuthContext';
 
 const TITLES = {

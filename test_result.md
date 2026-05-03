@@ -324,6 +324,66 @@ backend:
         agent: "testing"
         comment: "Chat messages persisted to MongoDB chat_messages collection. Both user and assistant messages stored with session_id, role, text, created_at. Verified 6 messages in DB from test conversations. API key resolution working: user key > admin key > EMERGENT_LLM_KEY fallback."
 
+  - task: "Generic content CRUD - admin endpoints"
+    implemented: true
+    working: true
+    file: "/app/backend/server.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: true
+        agent: "testing"
+        comment: "Admin content CRUD endpoints working for all 8 entities (projects, blog, testimonials, faqs, services, cases, team, partners). GET /api/admin/content/{entity} requires auth (401 without token), lists items sorted by created_at desc. POST creates items with id, created_at, updated_at. PATCH updates items and refreshes updated_at. DELETE removes items and returns {ok: true}. All CRUD operations tested and verified for all entities."
+
+  - task: "Generic content CRUD - authorization"
+    implemented: true
+    working: true
+    file: "/app/backend/server.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: true
+        agent: "testing"
+        comment: "Authorization working correctly. All admin content endpoints (GET, POST, PATCH, DELETE /api/admin/content/{entity}) return 401 without Bearer token. Admin token from /api/admin/login grants access to all content management operations."
+
+  - task: "Generic content CRUD - error handling"
+    implemented: true
+    working: true
+    file: "/app/backend/server.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: true
+        agent: "testing"
+        comment: "Error handling verified. Unknown entities return 404 for both admin and public endpoints. DELETE of non-existent item returns 404. PATCH of non-existent item returns 404. All error cases handled correctly."
+
+  - task: "Public content endpoint with published filtering"
+    implemented: true
+    working: true
+    file: "/app/backend/server.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: true
+        agent: "testing"
+        comment: "GET /api/content/{entity} public endpoint working correctly. No authentication required. Filters items where published != false (includes published=true and items without published field). Items with published=false correctly excluded. Sorted by order field ascending. Limit 500 items. Tested with projects entity - filtering logic verified with 3 test items (published=true visible, published=false hidden, no field visible)."
+
+  - task: "Content sorting and indexing"
+    implemented: true
+    working: true
+    file: "/app/backend/server.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: true
+        agent: "testing"
+        comment: "Sorting verified for both admin and public endpoints. Admin endpoint (GET /api/admin/content/{entity}) sorts by created_at descending (newest first). Public endpoint (GET /api/content/{entity}) sorts by order field ascending. Created test items with order values 3, 1, 2 and verified correct sorting in both endpoints."
+
 frontend:
   - task: "Frontend testing"
     implemented: false
@@ -340,12 +400,12 @@ frontend:
 metadata:
   created_by: "testing_agent"
   version: "1.0"
-  test_sequence: 2
+  test_sequence: 3
   run_ui: false
 
 test_plan:
   current_focus:
-    - "Phase 2 backend endpoints tested and verified"
+    - "Content management CRUD endpoints tested and verified"
   stuck_tasks: []
   test_all: false
   test_priority: "high_first"
@@ -355,3 +415,5 @@ agent_communication:
     message: "Completed comprehensive testing of all 20 Cibermedida backend endpoints. All tests passed successfully. Public endpoints (root, contact, newsletter), admin authentication (login, token verification), and all admin CRUD operations (messages, newsletter, settings) are working correctly. Password change functionality verified. All endpoints use correct external URL from REACT_APP_BACKEND_URL with /api prefix."
   - agent: "testing"
     message: "Phase 2 testing completed. All 21 test cases executed successfully. Client user authentication (register, login, profile, password change) working perfectly. Token type validation ensures admin tokens cannot access user endpoints. Chatbot endpoints working with anonymous and authenticated users. Multi-turn conversations maintain context. Messages persisted to MongoDB. Initial chatbot failure due to invalid admin API key (sk-test123 from previous testing) - cleared to allow EMERGENT_LLM_KEY fallback. Test user created and retained as requested: juan@test-cibermedida-6b01c0f6.es / testpass123. All backend endpoints operational."
+  - agent: "testing"
+    message: "Phase 3 (Content Management CRUD) testing completed successfully. All 8 content entities tested: projects, blog, testimonials, faqs, services, cases, team, partners. Admin CRUD endpoints (GET, POST, PATCH, DELETE /api/admin/content/{entity}) working correctly with proper authentication (401 without token). Public endpoint (GET /api/content/{entity}) working with correct published filtering (excludes published=false, includes published=true and items without published field). Error handling verified (404 for unknown entities and non-existent items). Sorting verified (admin: created_at desc, public: order asc). All test items cleaned up successfully. Total tests: 14 test scenarios × 8 entities + 6 cross-entity tests = 118 test cases passed."
